@@ -17,7 +17,7 @@ object Constants {
      const val NAME: String = "name"
      const val MOBILE: String = "mobile"
      const val BOARDS: String = "boards"
-     const val ASSIGNEDTO: String = "assigned to"
+     const val ASSIGNEDTO: String = "assignedTo"
 
      fun showImageChooser(activity: Activity) {
         val galleryIntent = Intent(

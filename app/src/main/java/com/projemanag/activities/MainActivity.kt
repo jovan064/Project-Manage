@@ -56,6 +56,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             intent.putExtra(Constants.NAME, mUserName)
             startActivity(intent)
         }
+
+        FirestoreClass().getBoardsList(this)
     }
 
     override fun onBackPressed() {
