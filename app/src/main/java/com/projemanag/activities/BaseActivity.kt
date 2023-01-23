@@ -23,7 +23,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
 
-    fun showProgressDialog(text: String, boardsList: Unit) {
+    fun showProgressDialog(text: String) {
         mProgressDialog = Dialog(this)
         mProgressDialog.setContentView(R.layout.dialog_progress)
 

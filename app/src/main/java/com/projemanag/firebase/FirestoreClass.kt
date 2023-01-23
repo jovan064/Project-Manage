@@ -1,6 +1,5 @@
 package com.projemanag.firebase
 
-import CreateBoardActivity
 import android.app.Activity
 import android.util.Log
 import android.widget.Toast
@@ -145,11 +144,7 @@ class FirestoreClass {
             }
     }
 
-    // TODO (Step 4: Create a function to get the list of created boards from the database.)
-    // START
-    /**
-     * A function to get the list of created boards from the database.
-     */
+
     fun getBoardsList(activity: MainActivity) {
 
         // The collection name for BOARDS
@@ -173,7 +168,7 @@ class FirestoreClass {
                 }
 
                 // Here pass the result to the base activity.
-                activity.populateBoardsList(boardsList)
+                activity.populateBoardsListToUI(boardsList)
             }
             .addOnFailureListener { e ->
 
@@ -198,3 +193,4 @@ class FirestoreClass {
 
         return currentUserID
     }
+}

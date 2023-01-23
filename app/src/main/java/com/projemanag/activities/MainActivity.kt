@@ -1,6 +1,5 @@
 package com.projemanag.activities
 
-import CreateBoardActivity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -48,7 +47,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // START
         // Get the current logged in user details.
         // Show the progress dialog.
-        showProgressDialog(resources.getString(R.string.please_wait),FirestoreClass().loadUserData(this@MainActivity, true))
+        showProgressDialog(resources.getString(R.string.please_wait))
 
         // END
 
@@ -164,7 +163,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // START
         if (isToReadBoardsList) {
             // Show the progress dialog.
-            showProgressDialog(resources.getString(R.string.please_wait),FirestoreClass().getBoardsList(this@MainActivity))
+            showProgressDialog(resources.getString(R.string.please_wait))
 
         }
         // END

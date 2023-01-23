@@ -54,8 +54,7 @@ class SignUpActivity : BaseActivity() {
 
         if (validateForm(name, email, password)) {
             showProgressDialog(
-                resources.getString(R.string.please_wait),
-                FirestoreClass().getBoardsList(this)
+                resources.getString(R.string.please_wait)
             )
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(
