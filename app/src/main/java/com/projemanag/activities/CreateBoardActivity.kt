@@ -64,13 +64,8 @@ class CreateBoardActivity : BaseActivity() {
 
             // Here if the image is not selected then update the other details of user.
             if (mSelectedImageFileUri != null) {
-
                 uploadBoardImage()
             } else {
-
-
-
-                // Call a function to update create a board.
                 createBoard()
             }
         }
@@ -186,9 +181,7 @@ class CreateBoardActivity : BaseActivity() {
             }
     }
 
-    /**
-     * A function to make an entry of a board in the database.
-     */
+
     private fun createBoard() {
 
         //  A list is created to add the assigned members.

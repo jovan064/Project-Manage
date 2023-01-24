@@ -56,6 +56,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             intent.putExtra(Constants.NAME, mUserName)
             startActivity(intent)
         }
+
+        FirestoreClass().getBoardsList(this)
     }
 
     override fun onBackPressed() {
@@ -149,31 +151,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Load the user image in the ImageView.
         Glide
             .with(this@MainActivity)
-            .load(user.image) // URL of the image
-            .centerCrop() // Scale type of the image.
-            .placeholder(R.drawable.ic_user_place_holder) // A default place holder
-            .into(navUserImage) // the view in which the image will be loaded.
+            .load(user.image)
+            .centerCrop()
+            .placeholder(R.drawable.ic_user_place_holder)
+            .into(navUserImage)
 
-        // The instance of the user name TextView of the navigation view.
         val navUsername = headerView.findViewById<TextView>(R.id.tv_username)
-        // Set the user name
         navUsername.text = user.name
 
-        // TODO (Step 8: Here if the isToReadBoardList is TRUE then get the list of boards.)
-        // START
+
         if (isToReadBoardsList) {
             // Show the progress dialog.
             showProgressDialog(resources.getString(R.string.please_wait))
 
         }
-        // END
     }
 
-    // TODO (Step 1: Create a function to populate the result of BOARDS list in the UI i.e in the recyclerView.)
-    // START
-    /**
-     * A function to populate the result of BOARDS list in the UI i.e in the recyclerView.
-     */
+
     fun populateBoardsListToUI(boardsList: ArrayList<Board>) {
 
         hideProgressDialog()
@@ -189,18 +183,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             // Create an instance of BoardItemsAdapter and pass the boardList to it.
             val adapter = BoardItemsAdapter(this@MainActivity, boardsList)
             rv_boards_list.adapter = adapter // Attach the adapter to the recyclerView.
+
+            adapter.setonClickListener(object :
+                BoardItemsAdapter.OnClickListener {
+                override fun onClick(position: Int, model: Board) {
+
+                    val intent = Intent(this@MainActivity, TaskListActivity::class.java)
+                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+                    startActivity(intent)
+                }
+            })
         } else {
             rv_boards_list.visibility = View.GONE
             tv_no_boards_available.visibility = View.VISIBLE
         }
     }
-    // END
 
-    /**
-     * A companion object to declare the constants.
-     */
     companion object {
-        //A unique code for starting the activity for result
         const val MY_PROFILE_REQUEST_CODE: Int = 11
     }
 }

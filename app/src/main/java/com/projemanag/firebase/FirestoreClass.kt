@@ -42,11 +42,10 @@ class FirestoreClass {
             }
     }
 
-    // TODO (Step 5: Add a parameter to check whether to read the boards list or not.)
     /**
      * A function to SignIn using firebase and get the user details from Firestore Database.
      */
-    fun loadUserData(activity: Activity, isToReadBoardsList: Boolean = false) {
+    fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
 
         // Here we pass the collection name from which we wants the data.
         mFireStore.collection(Constants.USERS)
@@ -65,7 +64,7 @@ class FirestoreClass {
                         activity.signInSuccess(loggedInUser)
                     }
                     is MainActivity -> {
-                        activity.updateNavigationUserDetails(loggedInUser, isToReadBoardsList)
+                        activity.updateNavigationUserDetails(loggedInUser, readBoardsList)
                     }
                     is MyProfileActivity -> {
                         activity.setUserDataInUI(loggedInUser)
@@ -144,13 +143,15 @@ class FirestoreClass {
             }
     }
 
-
+    /**
+     * A function to get the list of created boards from the database.
+     */
     fun getBoardsList(activity: MainActivity) {
 
         // The collection name for BOARDS
         mFireStore.collection(Constants.BOARDS)
             // A where array query as we want the list of the board in which the user is assigned. So here you can pass the current user id.
-            .whereArrayContains(Constants.ASSIGNEDTO, getCurrentUserID())
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserID())
             .get() // Will get the documents snapshots.
             .addOnSuccessListener { document ->
                 // Here we get the list of boards in the form of documents.
@@ -172,6 +173,27 @@ class FirestoreClass {
             }
             .addOnFailureListener { e ->
 
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating a board.", e)
+            }
+    }
+
+    // TODO (Step 9: Create a function to get the Board Details.)
+    // START
+    /**
+     * A function to get the Board Details.
+     */
+    fun getBoardDetails(activity: TaskListActivity, documentId: String) {
+        mFireStore.collection(Constants.BOARDS)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e(activity.javaClass.simpleName, document.toString())
+
+                // Send the result of board to the base activity.
+                activity.boardDetails(document.toObject(Board::class.java)!!)
+            }
+            .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while creating a board.", e)
             }

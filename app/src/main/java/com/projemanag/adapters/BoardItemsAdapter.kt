@@ -20,6 +20,11 @@ open class BoardItemsAdapter(private val context: Context, private val list: Arr
        return myViewHolder(LayoutInflater.from(context).inflate(R.layout.item_board, parent, false))
     }
 
+    fun setonClickListener(onClickListener: OnClickListener){
+        this.onClickListener = onClickListener
+    }
+
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val model = list[position]
 
