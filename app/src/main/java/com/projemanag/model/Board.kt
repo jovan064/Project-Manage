@@ -2,7 +2,6 @@ package com.projemanag.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.projemanag.activities.TaskListActivity
 
 data class Board(
     val name: String = "",
@@ -19,7 +18,7 @@ data class Board(
         source.createStringArrayList()!!,
         source.readString()!!,
         source.createTypedArrayList(Task.CREATOR)!!
-    )
+        )
 
     override fun describeContents() = 0
 

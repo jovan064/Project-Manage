@@ -11,7 +11,9 @@ import com.projemanag.model.Board
 import com.projemanag.model.User
 import com.projemanag.utils.Constants
 
-
+/**
+ * A custom class where we will add the operation performed for the firestore database.
+ */
 class FirestoreClass {
 
     // Create a instance of Firebase Firestore
@@ -178,8 +180,6 @@ class FirestoreClass {
             }
     }
 
-    // TODO (Step 9: Create a function to get the Board Details.)
-    // START
     /**
      * A function to get the Board Details.
      */
@@ -190,15 +190,39 @@ class FirestoreClass {
             .addOnSuccessListener { document ->
                 Log.e(activity.javaClass.simpleName, document.toString())
 
+                val board = document.toObject(Board::class.java)!!
+                board.documentId = document.id
+
                 // Send the result of board to the base activity.
-                activity.boardDetails(document.toObject(Board::class.java)!!)
+                activity.boardDetails(board)
             }
             .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while creating a board.", e)
             }
     }
-    // END
+
+    /**
+     * A function to create a task list in the board detail.
+     */
+    fun addUpdateTaskList(activity: TaskListActivity, board: Board) {
+
+        val taskListHashMap = HashMap<String, Any>()
+        taskListHashMap[Constants.TASK_LIST] = board.taskList
+
+        mFireStore.collection(Constants.BOARDS)
+            .document(board.documentId)
+            .update(taskListHashMap)
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "TaskList updated successfully.")
+
+                activity.addUpdateTaskListSuccess()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating a board.", e)
+            }
+    }
 
     /**
      * A function for getting the user id of current logged user.

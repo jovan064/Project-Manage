@@ -43,21 +43,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Assign the NavigationView.OnNavigationItemSelectedListener to navigation view.
         nav_view.setNavigationItemSelectedListener(this)
 
-        // TODO (Step 6: Here pass the parameter value as TRUE to read the boards rest all are FALSE.)
-        // START
         // Get the current logged in user details.
         // Show the progress dialog.
         showProgressDialog(resources.getString(R.string.please_wait))
-
-        // END
+        FirestoreClass().loadUserData(this@MainActivity, true)
 
         fab_create_board.setOnClickListener {
             val intent = Intent(this@MainActivity, CreateBoardActivity::class.java)
             intent.putExtra(Constants.NAME, mUserName)
-            startActivity(intent)
+            startActivityForResult(intent, CREATE_BOARD_REQUEST_CODE)
         }
-
-        FirestoreClass().getBoardsList(this)
     }
 
     override fun onBackPressed() {
@@ -74,8 +69,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_my_profile -> {
 
                 startActivityForResult(
-                    Intent(this@MainActivity, MyProfileActivity::class.java),
-                    MY_PROFILE_REQUEST_CODE
+                        Intent(this@MainActivity, MyProfileActivity::class.java),
+                        MY_PROFILE_REQUEST_CODE
                 )
             }
 
@@ -98,10 +93,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK
-            && requestCode == MY_PROFILE_REQUEST_CODE
+                && requestCode == MY_PROFILE_REQUEST_CODE
         ) {
             // Get the user updated details.
             FirestoreClass().loadUserData(this@MainActivity)
+        } else if (resultCode == Activity.RESULT_OK
+                && requestCode == CREATE_BOARD_REQUEST_CODE
+        ) {
+            // Get the latest boards list.
+            FirestoreClass().getBoardsList(this@MainActivity)
         } else {
             Log.e("Cancelled", "Cancelled")
         }
@@ -132,11 +132,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    // TODO (Step 7: Add a parameter to check whether to read the boards list or not.)
     /**
      * A function to get the current user details from firebase.
      */
-    fun updateNavigationUserDetails(user: User, isToReadBoardsList: Boolean) {
+    fun updateNavigationUserDetails(user: User, readBoardsList: Boolean) {
 
         hideProgressDialog()
 
@@ -150,24 +149,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // Load the user image in the ImageView.
         Glide
-            .with(this@MainActivity)
-            .load(user.image)
-            .centerCrop()
-            .placeholder(R.drawable.ic_user_place_holder)
-            .into(navUserImage)
+                .with(this@MainActivity)
+                .load(user.image) // URL of the image
+                .centerCrop() // Scale type of the image.
+                .placeholder(R.drawable.ic_user_place_holder) // A default place holder
+                .into(navUserImage) // the view in which the image will be loaded.
 
+        // The instance of the user name TextView of the navigation view.
         val navUsername = headerView.findViewById<TextView>(R.id.tv_username)
+        // Set the user name
         navUsername.text = user.name
 
-
-        if (isToReadBoardsList) {
+        if (readBoardsList) {
             // Show the progress dialog.
             showProgressDialog(resources.getString(R.string.please_wait))
-
+            FirestoreClass().getBoardsList(this@MainActivity)
         }
     }
 
-
+    /**
+     * A function to populate the result of BOARDS list in the UI i.e in the recyclerView.
+     */
     fun populateBoardsListToUI(boardsList: ArrayList<Board>) {
 
         hideProgressDialog()
@@ -184,10 +186,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             val adapter = BoardItemsAdapter(this@MainActivity, boardsList)
             rv_boards_list.adapter = adapter // Attach the adapter to the recyclerView.
 
-            adapter.setonClickListener(object :
-                BoardItemsAdapter.OnClickListener {
+            adapter.setOnClickListener(object :
+                    BoardItemsAdapter.OnClickListener {
                 override fun onClick(position: Int, model: Board) {
-
                     val intent = Intent(this@MainActivity, TaskListActivity::class.java)
                     intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
                     startActivity(intent)
@@ -199,7 +200,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
+    /**
+     * A companion object to declare the constants.
+     */
     companion object {
+        //A unique code for starting the activity for result
         const val MY_PROFILE_REQUEST_CODE: Int = 11
+
+        const val CREATE_BOARD_REQUEST_CODE: Int = 12
     }
 }
