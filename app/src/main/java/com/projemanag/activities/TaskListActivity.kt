@@ -53,7 +53,7 @@ class TaskListActivity : BaseActivity() {
         rv_task_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rv_task_list.setHasFixedSize(true)
 
-`
+
         val adapter = TaskListAdapter(this, board.taskList)
         rv_task_list.adapter = adapter
     }
