@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.projemanag.R
-import com.projemanag.model.Board
-import kotlinx.android.synthetic.main.item_board.view.*
+import com.projemanag.model.Card
+import kotlinx.android.synthetic.main.item_card.view.*
 
-open class BoardItemsAdapter(
+open class CardListItemsAdapter(
     private val context: Context,
-    private var list: ArrayList<Board>
+    private var list: ArrayList<Card>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onClickListener: OnClickListener? = null
@@ -27,7 +26,7 @@ open class BoardItemsAdapter(
 
         return MyViewHolder(
             LayoutInflater.from(context).inflate(
-                R.layout.item_board,
+                R.layout.item_card,
                 parent,
                 false
             )
@@ -49,22 +48,7 @@ open class BoardItemsAdapter(
 
         if (holder is MyViewHolder) {
 
-            Glide
-                .with(context)
-                .load(model.image)
-                .centerCrop()
-                .placeholder(R.drawable.ic_board_place_holder)
-                .into(holder.itemView.iv_board_image)
-
-            holder.itemView.tv_name.text = model.name
-            holder.itemView.tv_created_by.text = "Created By : ${model.createdBy}"
-
-            holder.itemView.setOnClickListener {
-
-                if (onClickListener != null) {
-                    onClickListener!!.onClick(position, model)
-                }
-            }
+            holder.itemView.tv_card_name.text = model.name
         }
     }
 
@@ -86,11 +70,11 @@ open class BoardItemsAdapter(
      * An interface for onclick items.
      */
     interface OnClickListener {
-        fun onClick(position: Int, model: Board)
+        fun onClick(position: Int, card: Card)
     }
 
     /**
      * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
      */
-    private class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }
