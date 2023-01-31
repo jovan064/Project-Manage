@@ -1,5 +1,6 @@
 package com.projemanag.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,18 +21,20 @@ class TaskListActivity : BaseActivity() {
     // A global variable for Board Details.
     private lateinit var mBoardDetails: Board
 
+    // A global variable for board document id as mBoardDocumentId
+    private lateinit var mBoardDocumentId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_list)
 
-        var boardDocumentId = ""
         if (intent.hasExtra(Constants.DOCUMENT_ID)) {
-            boardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID)!!
+            mBoardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID)!!
         }
 
         // Show the progress dialog.
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().getBoardDetails(this@TaskListActivity, boardDocumentId)
+        FirestoreClass().getBoardDetails(this@TaskListActivity, mBoardDocumentId)
     }
 
     /**
@@ -51,8 +54,6 @@ class TaskListActivity : BaseActivity() {
         toolbar_task_list_activity.setNavigationOnClickListener { onBackPressed() }
     }
 
-    // TODO (Step 7: Inflate the action menu for TaskListScreen and also launch the MembersActivity Screen on item selection.)
-    // START
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu to use in the action bar
         menuInflater.inflate(R.menu.menu_members, menu)
@@ -64,13 +65,27 @@ class TaskListActivity : BaseActivity() {
         when (item.itemId) {
             R.id.action_members -> {
 
-                startActivity(Intent(this@TaskListActivity, MembersActivity::class.java))
+                val intent = Intent(this@TaskListActivity, MembersActivity::class.java)
+                intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
+                startActivityForResult(intent, MEMBERS_REQUEST_CODE)
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
-    // END
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK
+            && requestCode == MEMBERS_REQUEST_CODE
+        ) {
+            // Show the progress dialog.
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().getBoardDetails(this@TaskListActivity, mBoardDocumentId)
+        } else {
+            Log.e("Cancelled", "Cancelled")
+        }
+    }
 
     /**
      * A function to get the result of Board Detail.
@@ -184,5 +199,23 @@ class TaskListActivity : BaseActivity() {
         // Show the progress dialog.
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
+    }
+
+    // TODO (Step 6: Create a function for viewing and updating card details.)
+    // START
+    /**
+     * A function for viewing and updating card details.
+     */
+    fun cardDetails(taskListPosition: Int, cardPosition: Int) {
+        startActivity(Intent(this@TaskListActivity, CardDetailsActivity::class.java))
+    }
+    // END
+
+    /**
+     * A companion object to declare the constants.
+     */
+    companion object {
+        //A unique code for starting the activity for result
+        const val MEMBERS_REQUEST_CODE: Int = 13
     }
 }

@@ -124,7 +124,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/task_item_divider_height"
-                android:background="@color/divider" />
+                android:background="@color/divider_color" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_edit_task_list_name"
