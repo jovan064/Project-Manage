@@ -53,6 +53,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             intent.putExtra(Constants.NAME, mUserName)
             startActivityForResult(intent, CREATE_BOARD_REQUEST_CODE)
         }
+
+        FirestoreClass().getBoardsList(this)
     }
 
     override fun onBackPressed() {
