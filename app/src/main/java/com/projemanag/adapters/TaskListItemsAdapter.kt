@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.projemanag.R
 import com.projemanag.activities.TaskListActivity
-import com.projemanag.model.Card
 import com.projemanag.model.Task
 import kotlinx.android.synthetic.main.item_task.view.*
 
@@ -36,7 +35,6 @@ open class TaskListItemsAdapter(
 
         return MyViewHolder(view)
     }
-
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int ) {
         val model = list[position]

@@ -201,11 +201,7 @@ class TaskListActivity : BaseActivity() {
         FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
     }
 
-    // TODO (Step 6: Create a function for viewing and updating card details.)
-    // START
-    /**
-     * A function for viewing and updating card details.
-     */
+
     fun cardDetails(taskListPosition: Int, cardPosition: Int) {
         startActivity(Intent(this@TaskListActivity, CardDetailsActivity::class.java))
     }
